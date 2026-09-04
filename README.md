@@ -73,7 +73,7 @@ $$
 T_\text{K} = \frac{\beta \cdot T_0}{\beta + T_0 \cdot \ln\left(\frac{R}{R_0}\right)}
 $$
 
-*Note: All temperatures ($T_\text{K}$ and $T_0$) must be in Kelvin ($T_\text{K} = T_\text{C} + 273.15$). Convert the resulting $T_\text{K}$ back to Celsius ($T_\text{C} = T_\text{K} - 273.15$) or Fahrenheit ($T_\text{F} = T_\text{C} \cdot \frac{9}{5} + 32$) for output.*
+> **Note:** Temperatures ($T_\text{K}$ and $T_0$) must be in Kelvin ($T_\text{K} = T_\text{C} + 273.15$). The result is converted to Celsius ($T_\text{C} = T_\text{K} - 273.15$) and then Fahrenheit ($T_\text{F} = T_\text{C} \times \frac{9}{5} + 32$) for output.
 
 The resulting temperature in Fahrenheit is constrained between `TEMP_MIN_F` and `TEMP_MAX_F` and scaled linearly to the target duty cycle range.
 
