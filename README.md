@@ -34,8 +34,6 @@ An open-loop, temperature-based 4-wire PWM fan controller built for the Arduino 
 | | Fixed Resistor (Side 2) / Thermistor (Leg 1) | **A0** | Analog sensing node |
 | | Thermistor (Leg 2) | **GND** | Common ground |
 
----
-
 ## Installation & Setup
 
 1. **Clone or download** this repository.
@@ -44,8 +42,6 @@ An open-loop, temperature-based 4-wire PWM fan controller built for the Arduino 
 4. Select the appropriate **Processor** (ATmega328P or ATmega328P Old Bootloader depending on your board).
 5. Upload the sketch.
 6. Open the **Serial Monitor** set to **115200 baud** to monitor temperature and duty cycle output.
-
----
 
 ## Configuration
 
@@ -61,6 +57,27 @@ const byte MIN_FAN_PWM = 50;  // 0% target maps to 50% PWM duty cycle. Based on 
 const byte MAX_FAN_PWM = 100; // 100% target maps to 100% PWM duty cycle
 ```
 
-# Credits
+## How It Works
 
-Written primarily by Google Gemini.
+### 1. 25 kHz PWM Generation
+Standard `analogWrite()` on the Arduino Nano operates at ~490 Hz, which produces loud, audible motor buzz in some PC fans. This controller configures Timer1 into **Phase-Correct PWM Mode** using `ICR1 = 320` as the TOP counter value:
+
+Frequency = 16 MHz / (2 * 1 * 320) = 25 kHz
+
+This generates a completely silent 25 kHz switching frequency directly on Pin D9.
+
+### 2. Steinhart-Hart Temperature Mapping
+The analog voltage on pin `A0` is converted to resistance and calculated using the Steinhart-Hart B-parameter equation:
+
+$$
+T_\text{K} = \frac{\beta \cdot T_0}{\beta + T_0 \cdot \ln\left(\frac{R}{R_0}\right)}
+$$
+
+*Note: All temperatures ($T_\text{K}$ and $T_0$) must be in Kelvin ($T_\text{K} = T_\text{C} + 273.15$). Convert the resulting $T_\text{K}$ back to Celsius ($T_\text{C} = T_\text{K} - 273.15$) or Fahrenheit ($T_\text{F} = T_\text{C} \cdot \frac{9}{5} + 32$) for output.*
+
+The resulting temperature in Fahrenheit is constrained between `TEMP_MIN_F` and `TEMP_MAX_F` and scaled linearly to the target duty cycle range.
+
+## Authors & Credits
+
+- **Hardware & Testing:** Designed, configured, and tested by RandomGgames.
+- **Software Implementation:** Developed in collaboration with Gemini.
